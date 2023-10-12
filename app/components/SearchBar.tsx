@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { SearchManufacturer } from ".";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const SearchButton = ({ otherClasses }: { otherClasses: string }) => (
   <button type="submit" className={`-ml-3 z-10 ${otherClasses}`}>
@@ -18,7 +19,44 @@ const SearchButton = ({ otherClasses }: { otherClasses: string }) => (
 
 const SearchBar = () => {
   const [manufacturer, setManufacturer] = useState<string>("");
-  const handleSearch = () => {};
+  const [model, setModel] = useState("");
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (manufacturer === "" && model === "") {
+      return alert("Please fill in search bar");
+    }
+    updateSearchParams(
+      model.toLocaleLowerCase(),
+      manufacturer.toLocaleLowerCase()
+    );
+  };
+
+  const updateSearchParams = (model: string, manufacturer: string) => {
+    // Create a new URLSearchParams object using the current URL search parameters
+    const searchParams = new URLSearchParams(window.location.search);
+    // Update or delete the 'model' search parameter based on the 'model' value
+    if (model) {
+      searchParams.set("model", model);
+    } else {
+      searchParams.delete("model");
+    }
+
+    // Update or delete the 'manufacturer' search parameter based on the 'manufacturer' value
+    if (manufacturer) {
+      searchParams.set("manufacturer", manufacturer);
+    } else {
+      searchParams.delete("manufacturer");
+    }
+
+    // Generate the new pathname with the updated search parameters
+    const newPathname = `${
+      window.location.pathname
+    }?${searchParams.toString()}`;
+
+    router.push(newPathname);
+  };
 
   return (
     <form className="searchbar" onSubmit={handleSearch}>
@@ -40,9 +78,9 @@ const SearchBar = () => {
         <input
           type="text"
           name="model"
-          //   value={model}
-          //   onChange={(e) => setModel(e.target.value)}
-          placeholder="Toyota..."
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
+          placeholder="Tiguan..."
           className="searchbar__input"
         />
         <SearchButton otherClasses="sm:hidden" />
