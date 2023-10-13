@@ -1,5 +1,5 @@
 import { fetchCars } from "@/utils";
-import { CarCard, CustomFilter, Home, SearchBar } from "./components";
+import { CarCard, CustomFilter, Home, SearchBar, ShowMore } from "./components";
 import { HomeProps } from "@/types";
 import { fuels, yearsOfProduction } from "./constants";
 
@@ -17,6 +17,7 @@ export default async function App({ searchParams }: HomeProps) {
   return (
     <main className="overflow-hidden">
       <Home />
+
       <div className="mt-12 padding-x padding-y max-width" id="discover">
         <div className="home__text-container">
           <h1 className="text-4xl font-extrabold">Car Catalogue</h1>
@@ -36,6 +37,10 @@ export default async function App({ searchParams }: HomeProps) {
                 <CarCard car={car} />
               ))}
             </div>
+            <ShowMore
+              pageNumber={(searchParams.limit || 10) / 10}
+              isNext={(searchParams.limit || 10) > allCars.length}
+            />
           </section>
         ) : (
           <div className="home__error-container">
