@@ -15,6 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <link rel="icon" href="model-icon.png" />
       <body className="relative">
         <Navbar />
         {children}
